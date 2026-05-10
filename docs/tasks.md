@@ -6,18 +6,18 @@ Files are ordered by dependency: implement each file before the ones that import
 
 ## 1. Foundation
 
-- [ ] **`tools/cache.py`** — Define `DATAFRAME_CACHE = {}`. Everything else that touches data imports from here.
+- [x] **`tools/cache.py`** — Define `DATAFRAME_CACHE = {}`. Everything else that touches data imports from here.
 - [ ] **`llm/loader.py`** — Implement `load_llm()` returning `ChatOllama(model=..., temperature=0)`. Read model name from `LLM_MODEL` env var, default `"qwen2.5:7b"`.
 - [ ] **`agent/state.py`** — Define `AgentState(TypedDict)` with `messages: Annotated[List[BaseMessage], operator.add]` and `dataset_paths: List[str]`.
 - [ ] **`agent/prompts.py`** — Write the system prompt string(s) for the ReAct agent (what the LLM should know about available tools and its role).
 
 ## 2. Tools
 
-- [ ] **`tools/summary.py`** — Implement tools: `load_dataset(path)` (reads CSV → stores in cache, returns shape/dtypes), `summarize_dataset(name)` (returns describe() + null counts).
-- [ ] **`tools/dataframe_ops.py`** — Implement tools: `filter_rows(name, column, value)`, `select_columns(name, columns)`, `show_sample(name, n)`.
-- [ ] **`tools/classification.py`** — Implement tool: `run_classification(name, target_column)` (train/test split → LogisticRegression → accuracy, classification report).
-- [ ] **`tools/regression.py`** — Implement tool: `run_regression(name, target_column)` (train/test split → LinearRegression → RMSE, R²).
-- [ ] **`tools/__init__.py`** — Import all `@tool` functions from the four tool modules; assemble `all_tools: list`.
+- [x] **`tools/summary.py`** — `preload_datasets`, `get_dataset_summaries`.
+- [x] **`tools/dataframe_ops.py`** — `call_dataframe_method`.
+- [x] **`tools/classification.py`** — `evaluate_classification_dataset` (RandomForestClassifier → accuracy).
+- [x] **`tools/regression.py`** — `evaluate_regression_dataset` (RandomForestRegressor → R², MSE).
+- [x] **`tools/__init__.py`** — Import all `@tool` functions from the four tool modules; assemble `all_tools: list`.
 
 ## 3. Agent Graph
 
