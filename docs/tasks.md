@@ -7,9 +7,9 @@ Files are ordered by dependency: implement each file before the ones that import
 ## 1. Foundation
 
 - [x] **`tools/cache.py`** — Define `DATAFRAME_CACHE = {}`. Everything else that touches data imports from here.
-- [ ] **`llm/loader.py`** — Implement `load_llm()` returning `ChatOllama(model=..., temperature=0)`. Read model name from `LLM_MODEL` env var, default `"qwen2.5:7b"`.
-- [ ] **`agent/state.py`** — Define `AgentState(TypedDict)` with `messages: Annotated[List[BaseMessage], operator.add]` and `dataset_paths: List[str]`.
-- [ ] **`agent/prompts.py`** — Write the system prompt string(s) for the ReAct agent (what the LLM should know about available tools and its role).
+- [x] **`llm/loader.py`** — Implement `load_llm()` returning `ChatOllama(model=..., temperature=0)`. Read model name from `LLM_MODEL` env var, default `"qwen2.5:7b"`.
+- [x] **`agent/state.py`** — Define `AgentState(TypedDict)` with `messages: Annotated[List[BaseMessage], operator.add]` and `dataset_paths: List[str]`.
+- [x] **`agent/prompts.py`** — Write the system prompt string(s) for the ReAct agent (what the LLM should know about available tools and its role).
 
 ## 2. Tools
 
@@ -21,16 +21,17 @@ Files are ordered by dependency: implement each file before the ones that import
 
 ## 3. Agent Graph
 
-- [ ] **`agent/graph.py`** — Implement `build_graph()`: create `StateGraph(AgentState)`, add `"agent"` node (calls LLM with system prompt), add `"tools"` node (`ToolNode(all_tools)`), wire conditional edge (tool calls → `"tools"`, else `END`), set entry point `"agent"`, compile and return.
+- [x] **`agent/graph.py`** — Implement `build_graph()`: create `StateGraph(AgentState)`, add `"agent"` node (calls LLM with system prompt), add `"tools"` node (`ToolNode(all_tools)`), wire conditional edge (tool calls → `"tools"`, else `END`), set entry point `"agent"`, compile and return.
 
 ## 4. Interface
 
-- [ ] **`interface/app.py`** — Implement `chat(user_message, history)`: convert Gradio history → LangChain messages, call `graph.invoke(...)`, extract and return last message content. Launch `gr.ChatInterface(chat).launch()` under `if __name__ == "__main__"`.
+- [x] **`interface/app.py`** — Implement `chat(user_message, history)`: convert Gradio history → LangChain messages, call `graph.invoke(...)`, extract and return last message content. Launch `gr.ChatInterface(chat).launch()` under `if __name__ == "__main__"`.
 
 ## 5. Docs & Config
 
 - [ ] **`docs/architecture.md`** — Flesh out the graph flow diagram and component table (placeholder exists).
 - [ ] **`requirements.txt`** — Pin exact versions after a successful `pip install` smoke test.
+- [x] **`.env.example`** — Document `LLM_MODEL` env var with default value.
 
 ---
 
