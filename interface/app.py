@@ -19,8 +19,22 @@ def chat(user_message: str, history: list) -> str:
             lc_messages.append(AIMessage(content=turn["content"]))
     lc_messages.append(HumanMessage(content=user_message))
 
-    result = graph.invoke({"messages": lc_messages, "dataset_paths": []})
-    return result["messages"][-1].content
+    last_messages = []
+    for chunk in graph.stream(
+        {"messages": lc_messages, "dataset_paths": []},
+        stream_mode="updates",
+    ):
+        for node_name, update in chunk.items():
+            for msg in update.get("messages", []):
+                if hasattr(msg, "tool_calls") and msg.tool_calls:
+                    for tc in msg.tool_calls:
+                        print(f"[{node_name}] → {tc['name']}({tc['args']})")
+                elif hasattr(msg, "name") and msg.name:  # ToolMessage
+                    preview = str(msg.content)[:120].replace("\n", " ")
+                    print(f"[{node_name}] ← {msg.name}: {preview}")
+                last_messages.append(msg)
+
+    return last_messages[-1].content
 
 
 if __name__ == "__main__":

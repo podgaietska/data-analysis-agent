@@ -2,7 +2,7 @@
 
 from langchain_core.messages import SystemMessage
 from langgraph.graph import StateGraph, END
-from langgraph.prebuilt import ToolNode
+from langgraph.prebuilt import ToolNode, tools_condition
 
 from agent.prompts import SYSTEM_PROMPT
 from agent.state import AgentState
@@ -21,17 +21,21 @@ def build_graph():
         ai_message = llm_with_tools.invoke(messages)
         return {"messages": [ai_message]}
 
-    def should_continue(state: AgentState) -> str:
-        last = state["messages"][-1]
-        if hasattr(last, "tool_calls") and last.tool_calls:
-            return "tools"
-        return END
-
     graph = StateGraph(AgentState)
+
     graph.add_node("agent", agent_node)
     graph.add_node("tools", ToolNode(all_tools))
+
     graph.set_entry_point("agent")
-    graph.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
+
+    graph.add_conditional_edges(
+        "agent",
+        tools_condition,
+        {
+            "tools": "tools",
+            END: END
+        },
+    )
     graph.add_edge("tools", "agent")
 
     return graph.compile()
